@@ -63,3 +63,12 @@ Site : http://127.0.0.1:8002
 
 1. XAMPP → démarrer **Apache** et **MySQL**
 2. `php artisan serve --port=8002`
+
+## Déployer en ligne (gratuit)
+
+Guide complet : **[DEPLOIEMENT.md](DEPLOIEMENT.md)**
+
+- **Railway** (recommandé) : MySQL + déploiement depuis GitHub  
+- **Render** : gratuit, PostgreSQL, mise en veille après inactivité  
+
+Dépôt GitHub : https://github.com/Charbel-p/Blog-Charbel

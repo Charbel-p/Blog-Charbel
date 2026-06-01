@@ -1,0 +1,13 @@
+# Configuration de build pour Railway / Nixpacks
+[phases.setup]
+nixPkgs = ["nodejs_20", "php82", "php82Extensions.curl", "php82Extensions.mbstring", "php82Extensions.pdo", "php82Extensions.pdo_mysql", "php82Extensions.xml", "php82Extensions.zip", "php82Extensions.gd"]
+
+[phases.install]
+cmds = [
+    "composer install --no-dev --optimize-autoloader --no-interaction",
+    "npm ci",
+    "npm run build"
+]
+
+[start]
+cmd = "sh docker/entrypoint.sh"
