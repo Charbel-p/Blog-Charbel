@@ -7,6 +7,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ReviewController;
+use App\Models\Category;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 // Healthcheck Railway (sans base de donnees)
@@ -22,6 +24,8 @@ Route::get('/debug-deploy', function () {
             'database' => 'connected',
             'vite_manifest' => file_exists(public_path('build/manifest.json')),
             'app_debug' => config('app.debug'),
+            'categories_count' => Category::count(),
+            'categories' => Category::orderBy('name')->pluck('name'),
         ]);
     } catch (\Throwable $e) {
         return response()->json([
@@ -30,6 +34,16 @@ Route::get('/debug-deploy', function () {
             'vite_manifest' => file_exists(public_path('build/manifest.json')),
         ], 500);
     }
+});
+
+// Une fois en ligne : ouvre cette URL pour creer les 3 categories (sans shell Railway)
+Route::get('/sync-categories', function () {
+    Artisan::call('blog:ensure-categories');
+
+    return response()->json([
+        'message' => 'Categories synchronisees.',
+        'categories' => Category::orderBy('name')->get(['id', 'name', 'slug']),
+    ]);
 });
 
 Route::get('/', [PostController::class, 'index'])->name('posts.index');
