@@ -20,6 +20,7 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction \
     && npm run build \
     && chmod +x docker/entrypoint.sh
 
+ENV PORT=8080
 EXPOSE 8080
 
 CMD ["sh", "docker/entrypoint.sh"]
