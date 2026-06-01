@@ -1,11 +1,13 @@
-# Build automatique Railway (Nixpacks) — plus simple que Docker
+# Build Railway / Nixpacks
 [phases.install]
 cmds = [
     "composer install --no-dev --optimize-autoloader --no-interaction",
-    "npm install",
-    "npm run build",
+    "npm ci",
     "chmod -R 775 storage bootstrap/cache || true"
 ]
+
+[phases.build]
+cmds = ["npm run build"]
 
 [start]
 cmd = "sh docker/entrypoint.sh"

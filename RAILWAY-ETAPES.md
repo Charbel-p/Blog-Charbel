@@ -1,88 +1,39 @@
-# Railway — MySQL (comme en local)
+# Railway — variables pour corriger l'erreur 500
 
-Le blog utilise **MySQL** (comme XAMPP / phpMyAdmin), **pas PostgreSQL**.
+Quand le site affiche **500 | SERVER ERROR**, mets **temporairement** `APP_DEBUG=true` pour voir l'erreur exacte sur la page.
 
----
-
-## 1. Sur Railway : une base MySQL, pas PostgreSQL
-
-1. Si tu as un service **`blog-charbel-db`** en **PostgreSQL** (icone elephant) :
-   - Clique dessus → **Settings** → **Remove service** (ou supprime-le)
-2. Dans le projet : **+ New** → **Database** → **Add MySQL**
-3. Railway cree la base **automatiquement** — rien a faire dans phpMyAdmin
-
----
-
-## 2. Variables (RAW Editor) — service `blog-charbel`
-
-Remplace **tout** par ce bloc.  
-Adapte le nom du service MySQL si le tien ne s'appelle pas `MySQL` (ex. `mysql`, `blog-charbel-mysql`).
-
-### Methode A — references Railway (recommandee)
-
-Clique **Add variable reference** vers ton service MySQL, ou colle :
+## RAW Editor — service blog-charbel (copier tout)
 
 ```env
 APP_NAME="Le blog de Charbel"
 APP_ENV="production"
-APP_DEBUG="false"
+APP_DEBUG="true"
 APP_KEY="base64:9nlaJm/LHj1VsXNl9Dhk5Bs+aP2gIsGTi+eoc8Uei2o="
-APP_URL="https://TON-URL.up.railway.app"
+APP_URL="https://blog-charbel-production.up.railway.app"
 LOG_CHANNEL="stderr"
-SESSION_DRIVER="database"
-CACHE_STORE="database"
-QUEUE_CONNECTION="database"
+SESSION_DRIVER="file"
+CACHE_STORE="file"
+QUEUE_CONNECTION="sync"
 FILESYSTEM_DISK="local"
-DB_CONNECTION="mysql"
-DB_HOST="${{MySQL.MYSQLHOST}}"
-DB_PORT="${{MySQL.MYSQLPORT}}"
-DB_DATABASE="${{MySQL.MYSQLDATABASE}}"
-DB_USERNAME="${{MySQL.MYSQLUSER}}"
-DB_PASSWORD="${{MySQL.MYSQLPASSWORD}}"
-```
-
-> Si ton service MySQL s'appelle autrement (ex. `blog-charbel-mysql`), remplace `MySQL` par ce nom :
-> `${{blog-charbel-mysql.MYSQLHOST}}`, etc.
-
-### Methode B — une seule URL (si Railway propose MYSQL_URL)
-
-```env
 DB_CONNECTION="mysql"
 DB_URL="${{MySQL.MYSQL_URL}}"
 ```
 
-(+ les variables APP_* comme ci-dessus)
+> Remplace `MySQL` par le nom exact de ta carte MySQL si different.
+> Quand tout marche, remets `APP_DEBUG="false"`.
 
----
+**Supprime** les anciennes lignes `DB_HOST`, `DB_PORT`, etc. si tu utilises `DB_URL` (evite les conflits).
 
-## 3. Builder et redeploy
+## Apres Update Variables
 
-1. Service **`blog-charbel`** → **Settings** → **Build** → **Nixpacks**
-2. **Update Variables** puis **Redeploy**
+1. **Redeploy**
+2. Recharge le site — tu verras l'erreur precise (ex. base, Vite, APP_KEY)
+3. **Deploy Logs** : cherche `Migrations OK` ou `ERREUR`
 
-Les tables sont creees par `php artisan migrate` au demarrage.
-
----
-
-## 4. Compte admin (une fois le deploy vert)
+## Admin (une fois le site OK)
 
 ```bash
 railway run php artisan db:seed --force
 ```
 
-Ou via le shell Railway sur le service app.
-
-- Email : `test@example.com`
-- Mot de passe : `password`
-
----
-
-## Rappel
-
-| En local | Sur Railway |
-|----------|-------------|
-| XAMPP MySQL + phpMyAdmin | Service **MySQL** Railway |
-| Base `blog_charbel` | Creee automatiquement |
-| `php artisan migrate` | Au demarrage de l'app |
-
-**PostgreSQL** venait du fichier `render.yaml` (option Render). Pour Railway, utilise **uniquement MySQL**.
+`test@example.com` / `password`
