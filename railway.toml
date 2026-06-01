@@ -1,0 +1,6 @@
+[build]
+builder = "nixpacks"
+
+[deploy]
+healthcheckPath = "/up"
+restartPolicyType = "on_failure"
