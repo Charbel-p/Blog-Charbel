@@ -18,11 +18,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $user = User::factory()->create([
-            'name' => 'Charbel',
-            'email' => 'test@example.com',
-            'is_admin' => true,
-        ]);
+        $user = User::updateOrCreate(
+            ['email' => env('ADMIN_EMAIL', 'test@example.com')],
+            [
+                'name' => env('ADMIN_NAME', 'Charbel'),
+                'password' => env('ADMIN_PASSWORD', 'password'),
+                'is_admin' => true,
+            ]
+        );
 
         $category = Category::create([
             'name' => 'General',
