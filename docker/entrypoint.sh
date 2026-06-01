@@ -14,6 +14,9 @@ fi
 
 php artisan storage:link 2>/dev/null || true
 
+echo ">> Categories par defaut..."
+php artisan blog:ensure-categories
+
 if [ -n "$ADMIN_EMAIL" ]; then
     echo ">> Compte administrateur..."
     php artisan blog:ensure-admin "$ADMIN_EMAIL" --password="${ADMIN_PASSWORD:-password}" --name="${ADMIN_NAME:-Charbel}"

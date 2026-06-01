@@ -27,20 +27,21 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        $category = Category::create([
-            'name' => 'General',
-            'slug' => 'general',
-        ]);
+        $this->call(CategorySeeder::class);
 
-        Post::create([
-            'user_id' => $user->id,
-            'category_id' => $category->id,
-            'title' => 'Bienvenue sur mon blog',
-            'slug' => Str::slug('Bienvenue sur mon blog'),
-            'excerpt' => 'Premier article de demonstration.',
-            'content' => 'Ceci est un article de demonstration pour valider le module blog, les commentaires et les notes.',
-            'is_published' => true,
-            'published_at' => now(),
-        ]);
+        $category = Category::where('slug', 'general')->first();
+
+        Post::updateOrCreate(
+            ['slug' => 'bienvenue-sur-mon-blog'],
+            [
+                'user_id' => $user->id,
+                'category_id' => $category->id,
+                'title' => 'Bienvenue sur mon blog',
+                'excerpt' => 'Premier article de demonstration.',
+                'content' => 'Ceci est un article de demonstration pour valider le module blog, les commentaires et les notes.',
+                'is_published' => true,
+                'published_at' => now(),
+            ]
+        );
     }
 }
