@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +20,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        $publicStorage = public_path('storage');
+        $appPublic = storage_path('app/public');
+
+        if (! File::exists($publicStorage) && File::isDirectory($appPublic)) {
+            File::link($appPublic, $publicStorage);
+        }
     }
 }

@@ -10,7 +10,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <article class="lg:col-span-2">
             <div class="card-blog overflow-hidden">
-                @if($post->coverImageUrl())
+                @if($post->hasCoverImage())
                     <img src="{{ $post->coverImageUrl() }}" alt="{{ $post->title }}"
                          class="w-full h-56 sm:h-72 object-cover">
                 @else

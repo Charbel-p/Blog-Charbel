@@ -10,6 +10,16 @@ use App\Http\Controllers\ReviewController;
 use App\Models\Category;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
+
+// Servir les images uploadées (storage/app/public) — utile si le lien symbolique manque sur Railway
+Route::get('/storage/{path}', function (string $path) {
+    if (! Storage::disk('public')->exists($path)) {
+        abort(404);
+    }
+
+    return Storage::disk('public')->response($path);
+})->where('path', '.*');
 
 // Healthcheck Railway (sans base de donnees)
 Route::get('/ping', fn () => response('OK', 200));

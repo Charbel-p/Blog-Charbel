@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Post extends Model
 {
@@ -59,8 +60,19 @@ class Post extends Model
 
     public function coverImageUrl(): ?string
     {
-        return $this->cover_image
-            ? asset('storage/'.$this->cover_image)
-            : null;
+        if (! $this->cover_image) {
+            return null;
+        }
+
+        if (! Storage::disk('public')->exists($this->cover_image)) {
+            return null;
+        }
+
+        return Storage::disk('public')->url($this->cover_image);
+    }
+
+    public function hasCoverImage(): bool
+    {
+        return $this->coverImageUrl() !== null;
     }
 }

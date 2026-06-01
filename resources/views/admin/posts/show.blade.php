@@ -13,7 +13,7 @@
     <div class="py-8">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-6">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                @if($post->coverImageUrl())
+                @if($post->hasCoverImage())
                     <img src="{{ $post->coverImageUrl() }}" alt="{{ $post->title }}" class="w-full h-56 object-cover">
                 @endif
                 <div class="p-6 sm:p-8">

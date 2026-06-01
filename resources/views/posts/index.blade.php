@@ -13,7 +13,7 @@
 
     @forelse ($posts as $post)
         <article class="card-blog mb-6 overflow-hidden">
-            @if($post->coverImageUrl())
+            @if($post->hasCoverImage())
                 <a href="{{ route('posts.show', $post->slug) }}" class="block">
                     <img src="{{ $post->coverImageUrl() }}" alt="{{ $post->title }}"
                          class="w-full h-48 sm:h-56 object-cover">

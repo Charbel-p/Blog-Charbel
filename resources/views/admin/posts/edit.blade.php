@@ -39,7 +39,7 @@
 
                     <div>
                         <x-input-label for="cover_image" value="Image de couverture" />
-                        @if($post->coverImageUrl())
+                        @if($post->hasCoverImage())
                             <img src="{{ $post->coverImageUrl() }}" alt="{{ $post->title }}"
                                  class="mt-2 mb-3 w-full max-h-48 object-cover rounded-lg border border-brand-100">
                         @endif
