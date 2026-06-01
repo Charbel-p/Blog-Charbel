@@ -68,7 +68,7 @@ Site : http://127.0.0.1:8002
 
 Guide complet : **[DEPLOIEMENT.md](DEPLOIEMENT.md)**
 
-- **Railway** (recommandé) : MySQL + déploiement depuis GitHub  
-- **Render** : gratuit, PostgreSQL, mise en veille après inactivité  
+- **Railway** (recommandé) : **MySQL** + déploiement depuis GitHub — voir `RAILWAY-ETAPES.md`  
+- **Render** : alternative PostgreSQL (pas MySQL)  
 
 Dépôt GitHub : https://github.com/Charbel-p/Blog-Charbel

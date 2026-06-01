@@ -1,37 +1,26 @@
-# Railway — guide simple (base de donnees)
+# Railway — MySQL (comme en local)
 
-## Tu n'as RIEN a faire dans MySQL / phpMyAdmin sur Railway
-
-Sur ton PC (XAMPP), tu utilisais phpMyAdmin pour creer `blog_charbel`.
-
-**Sur Railway, c'est different :**
-- Railway **cree et gere** la base tout seul
-- Tu ne te connectes pas a phpMyAdmin
-- Les tables sont creees par `php artisan migrate` au demarrage (fichier `docker/entrypoint.sh`)
+Le blog utilise **MySQL** (comme XAMPP / phpMyAdmin), **pas PostgreSQL**.
 
 ---
 
-## Quelle base utiliser ?
+## 1. Sur Railway : une base MySQL, pas PostgreSQL
 
-Sur ta capture Railway, tu as **`blog-charbel-db`** en **PostgreSQL** (elephant).
-
-| Service Railway | A utiliser ? |
-|-----------------|--------------|
-| `blog-charbel-db` (PostgreSQL) | **OUI** — garde celui-la |
-| MySQL (si tu en as cree un autre) | **NON** — supprime-le pour eviter la confusion |
-
-### Variables sur le service `blog-charbel` (app)
-
-```env
-DB_CONNECTION="pgsql"
-DB_URL="${{blog-charbel-db.DATABASE_URL}}"
-```
-
-Pas besoin de DB_HOST, DB_USER, etc. avec PostgreSQL sur Railway.
+1. Si tu as un service **`blog-charbel-db`** en **PostgreSQL** (icone elephant) :
+   - Clique dessus → **Settings** → **Remove service** (ou supprime-le)
+2. Dans le projet : **+ New** → **Database** → **Add MySQL**
+3. Railway cree la base **automatiquement** — rien a faire dans phpMyAdmin
 
 ---
 
-## Variables completes (RAW Editor)
+## 2. Variables (RAW Editor) — service `blog-charbel`
+
+Remplace **tout** par ce bloc.  
+Adapte le nom du service MySQL si le tien ne s'appelle pas `MySQL` (ex. `mysql`, `blog-charbel-mysql`).
+
+### Methode A — references Railway (recommandee)
+
+Clique **Add variable reference** vers ton service MySQL, ou colle :
 
 ```env
 APP_NAME="Le blog de Charbel"
@@ -44,23 +33,56 @@ SESSION_DRIVER="database"
 CACHE_STORE="database"
 QUEUE_CONNECTION="database"
 FILESYSTEM_DISK="local"
-DB_CONNECTION="pgsql"
-DB_URL="${{blog-charbel-db.DATABASE_URL}}"
+DB_CONNECTION="mysql"
+DB_HOST="${{MySQL.MYSQLHOST}}"
+DB_PORT="${{MySQL.MYSQLPORT}}"
+DB_DATABASE="${{MySQL.MYSQLDATABASE}}"
+DB_USERNAME="${{MySQL.MYSQLUSER}}"
+DB_PASSWORD="${{MySQL.MYSQLPASSWORD}}"
 ```
 
+> Si ton service MySQL s'appelle autrement (ex. `blog-charbel-mysql`), remplace `MySQL` par ce nom :
+> `${{blog-charbel-mysql.MYSQLHOST}}`, etc.
+
+### Methode B — une seule URL (si Railway propose MYSQL_URL)
+
+```env
+DB_CONNECTION="mysql"
+DB_URL="${{MySQL.MYSQL_URL}}"
+```
+
+(+ les variables APP_* comme ci-dessus)
+
 ---
 
-## Apres un deploy reussi
+## 3. Builder et redeploy
 
-1. Ouvre l'URL du site
-2. Pour l'admin : Railway → service app → **Shell** ou CLI :
-   `railway run php artisan db:seed --force`
-3. Connexion : `test@example.com` / `password`
+1. Service **`blog-charbel`** → **Settings** → **Build** → **Nixpacks**
+2. **Update Variables** puis **Redeploy**
+
+Les tables sont creees par `php artisan migrate` au demarrage.
 
 ---
 
-## Si le build echoue encore
+## 4. Compte admin (une fois le deploy vert)
 
-1. Service `blog-charbel` → **Settings** → **Builder** → choisis **Nixpacks** (pas Dockerfile)
-2. **Redeploy**
-3. Copie les dernieres lignes des logs ici
+```bash
+railway run php artisan db:seed --force
+```
+
+Ou via le shell Railway sur le service app.
+
+- Email : `test@example.com`
+- Mot de passe : `password`
+
+---
+
+## Rappel
+
+| En local | Sur Railway |
+|----------|-------------|
+| XAMPP MySQL + phpMyAdmin | Service **MySQL** Railway |
+| Base `blog_charbel` | Creee automatiquement |
+| `php artisan migrate` | Au demarrage de l'app |
+
+**PostgreSQL** venait du fichier `render.yaml` (option Render). Pour Railway, utilise **uniquement MySQL**.

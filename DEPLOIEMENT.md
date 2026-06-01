@@ -91,20 +91,11 @@ Ouvre l’URL Railway. Si erreur 500, consulte **Deployments** → **View logs**
 
 ---
 
-## Option 2 : Render (100 % gratuit, PostgreSQL)
+## Option 2 : Render (alternative — PostgreSQL uniquement)
 
-**Render** : [https://render.com](https://render.com)  
-- Plan **Free** (pas de carte pour le web + base gratuite dans certains cas)  
-- Le site **se met en veille** après ~15 min sans visite (réveil lent au 1er clic)  
-- Base **PostgreSQL** (pas MySQL) — Laravel gère les deux avec les mêmes migrations  
+**Render** utilise **PostgreSQL**, pas MySQL. Le projet est prevu pour **MySQL** : prefere **Railway** pour garder la meme base qu'en local.
 
-1. Compte Render + lier GitHub  
-2. **New** → **Blueprint** → repo `Blog-Charbel` (fichier `render.yaml` inclus)  
-3. Ou **New Web Service** → Docker, repo GitHub  
-4. Créer une base **PostgreSQL Free** et lier `DATABASE_URL`  
-5. Variables : `APP_KEY`, `APP_URL`, `APP_ENV=production`, `APP_DEBUG=false`  
-
-Render injecte souvent `DATABASE_URL` ; Laravel 12 peut l’utiliser si `DB_CONNECTION=pgsql` est défini dans `render.yaml`.
+Si tu utilises Render malgre tout, le fichier `render.yaml` configure PostgreSQL (`pgsql`).
 
 ---
 
