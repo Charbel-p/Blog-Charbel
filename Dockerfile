@@ -1,23 +1,43 @@
-FROM php:8.2-cli
+# --- Etape 1 : dependances PHP ---
+FROM composer:2 AS vendor
+WORKDIR /app
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --no-interaction --no-scripts --prefer-dist --ignore-platform-reqs
+COPY . .
+RUN composer install --no-dev --no-interaction --optimize-autoloader --ignore-platform-reqs
 
-RUN apt-get update && apt-get install -y \
-    git unzip curl libpng-dev libzip-dev libonig-dev \
-    && docker-php-ext-install pdo_mysql pdo_pgsql mbstring zip gd \
-    && rm -rf /var/lib/apt/lists/*
+# --- Etape 2 : assets frontend (Vite) ---
+FROM node:20-bookworm-slim AS assets
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
+COPY vite.config.js tailwind.config.js postcss.config.js ./
+COPY resources ./resources
+COPY public ./public
+RUN npm run build
 
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+# --- Etape 3 : image finale ---
+FROM php:8.2-cli-bookworm
 
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get install -y nodejs \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git unzip curl \
+    libpq-dev \
+    libzip-dev \
+    libpng-dev \
+    libjpeg62-turbo-dev \
+    libfreetype6-dev \
+    libonig-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j$(nproc) pdo pdo_mysql pdo_pgsql mbstring zip gd \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-COPY . .
+COPY --from=vendor /app /app
+COPY --from=assets /app/public/build /app/public/build
 
-RUN composer install --no-dev --optimize-autoloader --no-interaction \
-    && npm ci \
-    && npm run build \
+RUN mkdir -p storage/framework/sessions storage/framework/views storage/framework/cache storage/logs bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache \
     && chmod +x docker/entrypoint.sh
 
 ENV PORT=8080
