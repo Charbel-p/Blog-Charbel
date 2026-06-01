@@ -2,5 +2,7 @@
 builder = "nixpacks"
 
 [deploy]
+# Delai plus long : migrations MySQL avant que le serveur reponde
 healthcheckPath = "/up"
+healthcheckTimeout = 300
 restartPolicyType = "on_failure"
