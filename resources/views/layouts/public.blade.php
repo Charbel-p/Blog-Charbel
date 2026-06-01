@@ -10,7 +10,7 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
 
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        <x-vite-assets />
     </head>
     <body class="font-sans antialiased text-gray-900">
         <nav x-data="{ open: false }" class="bg-white/90 backdrop-blur border-b border-brand-100 shadow-sm sticky top-0 z-50">

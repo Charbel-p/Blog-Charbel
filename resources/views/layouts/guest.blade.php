@@ -10,7 +10,7 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
 
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        <x-vite-assets />
     </head>
     <body class="font-sans antialiased bg-brand-100">
         <div class="min-h-screen flex flex-col sm:justify-center items-center py-8 px-4">
