@@ -3,7 +3,8 @@
 cmds = [
     "composer install --no-dev --optimize-autoloader --no-interaction",
     "npm install",
-    "npm run build"
+    "npm run build",
+    "chmod -R 775 storage bootstrap/cache || true"
 ]
 
 [start]

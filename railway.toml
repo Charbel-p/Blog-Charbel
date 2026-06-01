@@ -2,7 +2,7 @@
 builder = "nixpacks"
 
 [deploy]
-# Delai plus long : migrations MySQL avant que le serveur reponde
-healthcheckPath = "/up"
+# /ping repond tout de suite (pas besoin de MySQL)
+healthcheckPath = "/ping"
 healthcheckTimeout = 300
 restartPolicyType = "on_failure"

@@ -9,6 +9,9 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
 
+// Healthcheck Railway (sans base de donnees)
+Route::get('/ping', fn () => response('OK', 200));
+
 Route::get('/', [PostController::class, 'index'])->name('posts.index');
 Route::get('/posts/{post:slug}', [PostController::class, 'show'])->name('posts.show');
 
