@@ -14,5 +14,10 @@ fi
 
 php artisan storage:link 2>/dev/null || true
 
+if [ -n "$ADMIN_EMAIL" ]; then
+    echo ">> Compte administrateur..."
+    php artisan blog:ensure-admin "$ADMIN_EMAIL" --password="${ADMIN_PASSWORD:-password}" --name="${ADMIN_NAME:-Charbel}"
+fi
+
 echo ">> Migrations OK, serveur pret."
 exec php artisan serve --host=0.0.0.0 --port="$PORT"
