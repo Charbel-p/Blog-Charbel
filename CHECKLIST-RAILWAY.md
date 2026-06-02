@@ -74,7 +74,34 @@ Remplacer `MySQL` par le **nom exact** de la carte MySQL sur Railway
 
 ---
 
-## 4. Si « L'application n'a pas repondu »
+## 4. Deploy OK mais le lien affiche « L'application n'a pas repondu »
+
+Le build est vert, mais le site ne repond pas = le serveur n'ecoute pas sur le bon port.
+
+### Verifier sur Railway (service APP)
+
+1. **Settings** → **Networking** → **Public Networking** = **ON**
+2. **Generate Domain** si pas d'URL
+3. Ouvrir l'URL du service **app** (pas MySQL)
+
+### Tester dans cet ordre
+
+1. `https://TON-URL/ping` → doit afficher `OK`
+2. `https://TON-URL/debug-deploy` → JSON
+3. `https://TON-URL/` → accueil du blog
+
+### Deploy Logs
+
+Chercher : `Demarrage serveur HTTP sur 0.0.0.0:XXXX`  
+Le nombre **XXXX** doit etre le port Railway (souvent affiche dans les variables `PORT`).
+
+### Variables obligatoires
+
+`APP_KEY` + `DB_URL` + `APP_URL` = URL exacte du site
+
+---
+
+## 5. Si « L'application n'a pas repondu » (deploy en echec)
 
 1. Service **app** → **Deployments** → **Deploy Logs** (pas Build Logs)
 2. Chercher :

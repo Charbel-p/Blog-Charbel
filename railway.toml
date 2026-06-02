@@ -2,5 +2,5 @@
 builder = "nixpacks"
 
 [deploy]
-# Pas de healthcheck = deploy non bloque par /up ou /ping
+startCommand = "sh docker/entrypoint.sh"
 restartPolicyType = "on_failure"
