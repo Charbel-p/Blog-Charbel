@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Comment;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
@@ -63,8 +64,21 @@ class PostController extends Controller
 
     public function show(Post $post): View
     {
-        $post->load(['category', 'user', 'comments.user', 'reviews.user']);
-        return view('admin.posts.show', compact('post'));
+        $allComments = $post->comments()->with(['user', 'parent.user'])->get();
+
+        $topLevelComments = $allComments
+            ->whereNull('parent_id')
+            ->sortByDesc('created_at')
+            ->values();
+
+        $topLevelComments->each(fn (Comment $comment) => $comment->attachChildrenFrom($allComments));
+
+        $post->setRelation('comments', $topLevelComments);
+        $post->load(['category', 'user', 'reviews.user']);
+
+        $commentsCount = $allComments->count();
+
+        return view('admin.posts.show', compact('post', 'commentsCount'));
     }
 
     public function edit(Post $post): View

@@ -34,7 +34,15 @@
                                 <tr class="hover:bg-gray-50">
                                     <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $comment->post->title }}</td>
                                     <td class="px-6 py-4 text-sm text-gray-500">{{ $comment->user->name }}</td>
-                                    <td class="px-6 py-4 text-sm text-gray-600 max-w-xs">{{ $comment->content }}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-600 max-w-xs">
+                                        @if($comment->isReply())
+                                            <span class="inline-flex px-2 py-0.5 text-xs rounded bg-brand-50 text-brand-700 mb-1">Réponse</span>
+                                            @if($comment->parent)
+                                                <span class="text-xs text-gray-400 block mb-1">à {{ $comment->parent->user->name }}</span>
+                                            @endif
+                                        @endif
+                                        {{ $comment->content }}
+                                    </td>
                                     <td class="px-6 py-4">
                                         @if($comment->is_approved)
                                             <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">Approuve</span>

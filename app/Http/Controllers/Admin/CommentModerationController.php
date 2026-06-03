@@ -12,7 +12,7 @@ class CommentModerationController extends Controller
     public function index(): View
     {
         $comments = Comment::query()
-            ->with(['post', 'user'])
+            ->with(['post', 'user', 'parent.user'])
             ->latest()
             ->paginate(20);
 

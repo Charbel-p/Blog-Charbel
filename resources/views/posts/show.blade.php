@@ -44,24 +44,16 @@
                 </div>
             </div>
 
-            <section class="mt-8">
+            <section class="mt-8" id="comments">
                 <h2 class="text-lg font-semibold text-brand-900 mb-4">
-                    Commentaires ({{ $post->comments->count() }})
+                    Commentaires ({{ $commentsCount }})
                 </h2>
 
                 @forelse ($post->comments as $comment)
-                    <div class="bg-white rounded-lg border border-brand-100 p-4 mb-3">
-                        <div class="flex items-center gap-2 mb-2">
-                            <div class="w-8 h-8 rounded-full bg-brand-600 flex items-center justify-center text-white text-sm font-semibold">
-                                {{ strtoupper(substr($comment->user->name, 0, 1)) }}
-                            </div>
-                            <strong class="text-sm text-brand-900">{{ $comment->user->name }}</strong>
-                        </div>
-                        <p class="text-gray-600 text-sm">{{ $comment->content }}</p>
-                    </div>
+                    @include('posts.partials.comment', ['comment' => $comment, 'post' => $post])
                 @empty
                     <p class="text-gray-500 text-sm bg-white rounded-lg border border-brand-100 p-4">
-                        Aucun commentaire valide pour le moment.
+                        Aucun commentaire pour le moment. Soyez le premier à réagir !
                     </p>
                 @endforelse
             </section>
@@ -110,4 +102,32 @@
             @endauth
         </aside>
     </div>
+
+    @push('scripts')
+        <script>
+            document.querySelectorAll('.reply-toggle').forEach((button) => {
+                button.addEventListener('click', () => {
+                    const form = document.getElementById(button.dataset.target);
+                    form?.classList.toggle('hidden');
+                    if (form && !form.classList.contains('hidden')) {
+                        form.querySelector('textarea')?.focus();
+                    }
+                });
+            });
+
+            document.querySelectorAll('.reply-cancel').forEach((button) => {
+                button.addEventListener('click', () => {
+                    const form = document.getElementById(button.dataset.target);
+                    if (form) {
+                        form.classList.add('hidden');
+                        form.querySelector('textarea').value = '';
+                    }
+                });
+            });
+
+            @if(old('parent_id'))
+                document.getElementById('reply-form-{{ old('parent_id') }}')?.classList.remove('hidden');
+            @endif
+        </script>
+    @endpush
 </x-public-layout>

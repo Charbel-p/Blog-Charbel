@@ -24,11 +24,7 @@ class AppServiceProvider extends ServiceProvider
         $appPublic = storage_path('app/public');
 
         if (! File::exists($publicStorage) && File::isDirectory($appPublic)) {
-            try {
-                File::link($appPublic, $publicStorage);
-            } catch (\Throwable) {
-                // Ignore : la route /storage/* sert les fichiers si le lien symbolique echoue
-            }
+            File::link($appPublic, $publicStorage);
         }
     }
 }

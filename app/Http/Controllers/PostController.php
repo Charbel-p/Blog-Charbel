@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Comment;
 use App\Models\Post;
 use Illuminate\View\View;
 
@@ -27,13 +28,28 @@ class PostController extends Controller
             404
         );
 
+        $approvedComments = $post->comments()
+            ->approved()
+            ->with(['user', 'parent.user'])
+            ->get();
+
+        $topLevelComments = $approvedComments
+            ->whereNull('parent_id')
+            ->sortByDesc('created_at')
+            ->values();
+
+        $topLevelComments->each(fn (Comment $comment) => $comment->attachChildrenFrom($approvedComments));
+
+        $post->setRelation('comments', $topLevelComments);
+
         $post->load([
             'category',
             'user',
-            'comments' => fn ($query) => $query->where('is_approved', true)->with('user')->latest(),
             'reviews.user',
         ])->loadAvg('reviews', 'rating');
 
-        return view('posts.show', compact('post'));
+        $commentsCount = $approvedComments->count();
+
+        return view('posts.show', compact('post', 'commentsCount'));
     }
 }

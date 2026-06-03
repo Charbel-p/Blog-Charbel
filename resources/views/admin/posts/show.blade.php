@@ -26,19 +26,9 @@
             </div>
 
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <h3 class="text-lg font-semibold mb-4">Commentaires ({{ $post->comments->count() }})</h3>
-                @forelse($post->comments as $comment)
-                    <div class="border-b border-gray-100 py-3 last:border-0">
-                        <div class="flex items-center justify-between">
-                            <strong class="text-sm">{{ $comment->user->name }}</strong>
-                            @if($comment->is_approved)
-                                <span class="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-800">Approuve</span>
-                            @else
-                                <span class="text-xs px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-800">En attente</span>
-                            @endif
-                        </div>
-                        <p class="text-sm text-gray-600 mt-1">{{ $comment->content }}</p>
-                    </div>
+                <h3 class="text-lg font-semibold mb-4">Commentaires ({{ $commentsCount }})</h3>
+                @forelse($post->comments->whereNull('parent_id') as $comment)
+                    @include('admin.posts.partials.comment', ['comment' => $comment, 'depth' => 0])
                 @empty
                     <p class="text-gray-500 text-sm">Aucun commentaire.</p>
                 @endforelse
