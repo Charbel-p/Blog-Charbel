@@ -21,7 +21,7 @@ class CommentModerationController extends Controller
 
     public function approve(Comment $comment): RedirectResponse
     {
-        $comment->update(['is_approved' => true]);
+        $comment->update(['est_approuve' => true]);
         return back()->with('status', 'Commentaire approuve.');
     }
 

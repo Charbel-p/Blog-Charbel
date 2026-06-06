@@ -72,10 +72,6 @@
                                           class="mt-1 block w-full" :value="old('rating', 5)" required />
                             <x-input-error :messages="$errors->get('rating')" class="mt-1" />
                         </div>
-                        <div>
-                            <x-input-label for="opinion" value="Votre avis (optionnel)" />
-                            <textarea id="opinion" name="opinion" rows="3" class="mt-1 block w-full input-brand">{{ old('opinion') }}</textarea>
-                        </div>
                         <x-primary-button class="w-full justify-center">Envoyer ma note</x-primary-button>
                     </form>
                 </div>
@@ -125,8 +121,37 @@
                 });
             });
 
+            document.querySelectorAll('.edit-toggle').forEach((button) => {
+                button.addEventListener('click', () => {
+                    const form = document.getElementById(button.dataset.target);
+                    form?.classList.toggle('hidden');
+                    if (form && !form.classList.contains('hidden')) {
+                        form.querySelector('textarea')?.focus();
+                    }
+                });
+            });
+
+            document.querySelectorAll('.edit-cancel').forEach((button) => {
+                button.addEventListener('click', () => {
+                    const form = document.getElementById(button.dataset.target);
+                    const content = document.getElementById(button.dataset.contentTarget);
+                    if (form) {
+                        form.classList.add('hidden');
+                        if (content && button.dataset.original) {
+                            form.querySelector('textarea').value = button.dataset.original;
+                        }
+                    }
+                });
+            });
+
             @if(old('parent_id'))
                 document.getElementById('reply-form-{{ old('parent_id') }}')?.classList.remove('hidden');
+            @endif
+
+            @if(old('edit_comment_id'))
+                document.getElementById('edit-form-{{ old('edit_comment_id') }}')?.classList.remove('hidden');
+            @elseif(request('edit'))
+                document.getElementById('edit-form-{{ request('edit') }}')?.classList.remove('hidden');
             @endif
         </script>
     @endpush

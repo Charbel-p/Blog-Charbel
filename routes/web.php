@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\CommentModerationController;
 use App\Http\Controllers\Admin\PostController as AdminPostController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\CommentLikeController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PostController;
@@ -35,7 +36,7 @@ Route::get('/debug-deploy', function () {
             'vite_manifest' => file_exists(public_path('build/manifest.json')),
             'app_debug' => config('app.debug'),
             'categories_count' => Category::count(),
-            'categories' => Category::orderBy('name')->pluck('name'),
+            'categories' => Category::orderBy('nom')->pluck('nom'),
         ]);
     } catch (\Throwable $e) {
         return response()->json([
@@ -52,12 +53,12 @@ Route::get('/sync-categories', function () {
 
     return response()->json([
         'message' => 'Categories synchronisees.',
-        'categories' => Category::orderBy('name')->get(['id', 'name', 'slug']),
+        'categories' => Category::orderBy('nom')->get(['id', 'nom', 'libelle_url']),
     ]);
 });
 
 Route::get('/', [PostController::class, 'index'])->name('posts.index');
-Route::get('/posts/{post:slug}', [PostController::class, 'show'])->name('posts.show');
+Route::get('/posts/{post:libelle_url}', [PostController::class, 'show'])->name('posts.show');
 
 Route::get('/dashboard', DashboardController::class)
     ->middleware(['auth', 'verified'])
@@ -65,6 +66,9 @@ Route::get('/dashboard', DashboardController::class)
 
 Route::middleware('auth')->group(function () {
     Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::patch('/comments/{comment}', [CommentController::class, 'update'])->name('comments.update');
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+    Route::post('/comments/{comment}/like', [CommentLikeController::class, 'toggle'])->name('comments.like');
     Route::post('/posts/{post}/reviews', [ReviewController::class, 'store'])->name('reviews.store');
 
     Route::prefix('admin')->name('admin.')->middleware('admin')->group(function () {

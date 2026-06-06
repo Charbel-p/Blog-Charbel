@@ -22,6 +22,9 @@
                             Mes commentaires
                         @endif
                     </x-nav-link>
+                    <x-nav-link :href="route('profile.edit')" :active="request()->routeIs('profile.*')">
+                        Mon compte
+                    </x-nav-link>
                     <x-nav-link :href="route('posts.index')" :active="request()->routeIs('posts.*')">
                         Blog
                     </x-nav-link>
@@ -45,7 +48,7 @@
 
                     <x-slot name="content">
                         <x-dropdown-link :href="route('profile.edit')">
-                            {{ __('Profile') }}
+                            Mon compte
                         </x-dropdown-link>
 
                         <!-- Authentication -->
@@ -84,6 +87,9 @@
                     Mes commentaires
                 @endif
             </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('profile.edit')" :active="request()->routeIs('profile.*')">
+                Mon compte
+            </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('posts.index')" :active="request()->routeIs('posts.*')">
                 Blog
             </x-responsive-nav-link>
@@ -98,7 +104,7 @@
 
             <div class="mt-3 space-y-1">
                 <x-responsive-nav-link :href="route('profile.edit')">
-                    {{ __('Profile') }}
+                    Mon compte
                 </x-responsive-nav-link>
 
                 <!-- Authentication -->

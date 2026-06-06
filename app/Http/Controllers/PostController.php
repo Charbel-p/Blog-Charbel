@@ -12,10 +12,10 @@ class PostController extends Controller
     {
         $posts = Post::query()
             ->with('category')
-            ->withAvg('reviews', 'rating')
-            ->withCount(['reviews', 'comments' => fn ($query) => $query->where('is_approved', true)])
+            ->withAvg('reviews', 'note')
+            ->withCount(['reviews', 'comments' => fn ($query) => $query->where('est_approuve', true)])
             ->published()
-            ->latest('published_at')
+            ->latest('publie_le')
             ->paginate(6);
 
         return view('posts.index', compact('posts'));
@@ -28,14 +28,22 @@ class PostController extends Controller
             404
         );
 
-        $approvedComments = $post->comments()
+        $commentsQuery = $post->comments()
             ->approved()
             ->with(['user', 'parent.user'])
-            ->get();
+            ->withCount('likes');
+
+        if (auth()->check()) {
+            $commentsQuery->withExists([
+                'likes as liked_by_me' => fn ($query) => $query->where('utilisateur_id', auth()->id()),
+            ]);
+        }
+
+        $approvedComments = $commentsQuery->get();
 
         $topLevelComments = $approvedComments
-            ->whereNull('parent_id')
-            ->sortByDesc('created_at')
+            ->whereNull('commentaire_parent_id')
+            ->sortByDesc(fn (Comment $comment) => $comment->cree_le)
             ->values();
 
         $topLevelComments->each(fn (Comment $comment) => $comment->attachChildrenFrom($approvedComments));
@@ -46,7 +54,7 @@ class PostController extends Controller
             'category',
             'user',
             'reviews.user',
-        ])->loadAvg('reviews', 'rating');
+        ])->loadAvg('reviews', 'note');
 
         $commentsCount = $approvedComments->count();
 

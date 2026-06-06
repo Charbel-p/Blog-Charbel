@@ -16,10 +16,10 @@ class ReviewController extends Controller
         ]);
 
         $post->reviews()->updateOrCreate(
-            ['user_id' => $request->user()->id],
+            ['utilisateur_id' => $request->user()->id],
             [
-                'rating' => $validated['rating'],
-                'opinion' => $validated['opinion'] ?? null,
+                'note' => $validated['rating'],
+                'texte_avis' => $validated['opinion'] ?? null,
             ]
         );
 

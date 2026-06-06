@@ -19,28 +19,28 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $user = User::updateOrCreate(
-            ['email' => env('ADMIN_EMAIL', 'test@example.com')],
+            ['courriel' => env('ADMIN_EMAIL', 'test@example.com')],
             [
-                'name' => env('ADMIN_NAME', 'Charbel'),
-                'password' => env('ADMIN_PASSWORD', 'password'),
-                'is_admin' => true,
+                'nom' => env('ADMIN_NAME', 'Charbel'),
+                'mot_de_passe' => env('ADMIN_PASSWORD', 'password'),
+                'est_administrateur' => true,
             ]
         );
 
         $this->call(CategorySeeder::class);
 
-        $category = Category::where('slug', 'general')->first();
+        $category = Category::where('libelle_url', 'general')->first();
 
         Post::updateOrCreate(
-            ['slug' => 'bienvenue-sur-mon-blog'],
+            ['libelle_url' => 'bienvenue-sur-mon-blog'],
             [
-                'user_id' => $user->id,
-                'category_id' => $category->id,
-                'title' => 'Bienvenue sur mon blog',
-                'excerpt' => 'Premier article de demonstration.',
-                'content' => 'Ceci est un article de demonstration pour valider le module blog, les commentaires et les notes.',
-                'is_published' => true,
-                'published_at' => now(),
+                'utilisateur_id' => $user->id,
+                'categorie_id' => $category->id,
+                'titre' => 'Bienvenue sur mon blog',
+                'resume' => 'Premier article de demonstration.',
+                'contenu' => 'Ceci est un article de demonstration pour valider le module blog, les commentaires et les notes.',
+                'est_publie' => true,
+                'publie_le' => now(),
             ]
         );
     }

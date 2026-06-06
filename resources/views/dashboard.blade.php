@@ -72,10 +72,24 @@
                                     </span>
                                 </div>
                                 <p class="text-gray-700 text-sm">{{ $comment->content }}</p>
-                                <a href="{{ route('posts.show', $comment->post->slug) }}"
-                                   class="inline-block mt-2 text-xs link-brand">
-                                    Voir l'article &rarr;
-                                </a>
+                                <div class="mt-3 flex flex-wrap items-center gap-3">
+                                    <a href="{{ route('posts.show', ['post' => $comment->post, 'edit' => $comment->id]) }}#comment-{{ $comment->id }}"
+                                       class="text-xs link-brand">
+                                        Voir sur l'article
+                                    </a>
+                                    <a href="{{ route('posts.show', ['post' => $comment->post, 'edit' => $comment->id]) }}#comment-{{ $comment->id }}"
+                                       class="text-xs font-medium text-gray-600 hover:text-gray-800">
+                                        Modifier
+                                    </a>
+                                    <form action="{{ route('comments.destroy', $comment) }}" method="POST" class="inline"
+                                          onsubmit="return confirm('Supprimer ce commentaire ?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-xs font-medium text-red-600 hover:text-red-800">
+                                            Supprimer
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         @empty
                             <div class="text-center py-8 rounded-lg border border-dashed border-brand-200">

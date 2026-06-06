@@ -6,7 +6,10 @@
             <p class="text-accent-400 text-sm font-semibold uppercase tracking-wider mb-2">Bienvenue</p>
             <h1 class="text-3xl sm:text-5xl font-bold tracking-tight">Le blog de Charbel</h1>
             <p class="mt-4 text-brand-100 text-lg leading-relaxed">
-                Mes articles, vos commentaires et vos notes. Un coin personnel pour echanger et partager.
+                Moi, c'est Charbel, élève ingénieur en informatique et télécommunications, passionné de voitures et de voyages. Bienvenue sur mon blog !
+            </p>
+            <p class="mt-3 text-brand-200/90 text-base leading-relaxed">
+                Mes articles, vos commentaires et vos notes — un coin personnel pour échanger et partager.
             </p>
         </div>
     </x-slot>

@@ -21,11 +21,11 @@ class EnsureAdminCommand extends Command
         $name = $this->option('name') ?? env('ADMIN_NAME', 'Charbel');
 
         $user = User::updateOrCreate(
-            ['email' => $email],
+            ['courriel' => $email],
             [
-                'name' => $name,
-                'password' => $password,
-                'is_admin' => true,
+                'nom' => $name,
+                'mot_de_passe' => $password,
+                'est_administrateur' => true,
             ]
         );
 

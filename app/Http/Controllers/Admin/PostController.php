@@ -26,7 +26,7 @@ class PostController extends Controller
 
     public function create(): View
     {
-        $categories = Category::query()->orderBy('name')->get();
+        $categories = Category::query()->orderBy('nom')->get();
         return view('admin.posts.create', compact('categories'));
     }
 
@@ -42,7 +42,7 @@ class PostController extends Controller
         ]);
 
         $slug = Str::slug($validated['title']);
-        $count = Post::where('slug', 'like', $slug.'%')->count();
+        $count = Post::where('libelle_url', 'like', $slug.'%')->count();
         $finalSlug = $count ? "{$slug}-".($count + 1) : $slug;
 
         $coverImagePath = null;
@@ -51,12 +51,15 @@ class PostController extends Controller
         }
 
         Post::create([
-            ...$validated,
-            'cover_image' => $coverImagePath,
-            'slug' => $finalSlug,
-            'user_id' => $request->user()->id,
-            'is_published' => (bool) ($validated['is_published'] ?? false),
-            'published_at' => ($validated['is_published'] ?? false) ? now() : null,
+            'titre' => $validated['title'],
+            'resume' => $validated['excerpt'] ?? null,
+            'contenu' => $validated['content'],
+            'categorie_id' => $validated['category_id'],
+            'image_couverture' => $coverImagePath,
+            'libelle_url' => $finalSlug,
+            'utilisateur_id' => $request->user()->id,
+            'est_publie' => (bool) ($validated['is_published'] ?? false),
+            'publie_le' => ($validated['is_published'] ?? false) ? now() : null,
         ]);
 
         return redirect()->route('admin.posts.index')->with('status', 'Article cree avec succes.');
@@ -67,8 +70,8 @@ class PostController extends Controller
         $allComments = $post->comments()->with(['user', 'parent.user'])->get();
 
         $topLevelComments = $allComments
-            ->whereNull('parent_id')
-            ->sortByDesc('created_at')
+            ->whereNull('commentaire_parent_id')
+            ->sortByDesc(fn (Comment $comment) => $comment->cree_le)
             ->values();
 
         $topLevelComments->each(fn (Comment $comment) => $comment->attachChildrenFrom($allComments));
@@ -83,7 +86,7 @@ class PostController extends Controller
 
     public function edit(Post $post): View
     {
-        $categories = Category::query()->orderBy('name')->get();
+        $categories = Category::query()->orderBy('nom')->get();
         return view('admin.posts.edit', compact('post', 'categories'));
     }
 
@@ -99,14 +102,14 @@ class PostController extends Controller
         ]);
 
         $slug = Str::slug($validated['title']);
-        if ($slug !== $post->slug) {
-            $count = Post::where('slug', 'like', $slug.'%')->where('id', '!=', $post->id)->count();
-            $post->slug = $count ? "{$slug}-".($count + 1) : $slug;
+        if ($slug !== $post->libelle_url) {
+            $count = Post::where('libelle_url', 'like', $slug.'%')->where('id', '!=', $post->id)->count();
+            $post->libelle_url = $count ? "{$slug}-".($count + 1) : $slug;
         }
 
         if ($request->hasFile('cover_image')) {
-            if ($post->cover_image) {
-                Storage::disk('public')->delete($post->cover_image);
+            if ($post->image_couverture) {
+                Storage::disk('public')->delete($post->image_couverture);
             }
             $validated['cover_image'] = $request->file('cover_image')->store('posts/covers', 'public');
         } else {
@@ -114,9 +117,15 @@ class PostController extends Controller
         }
 
         $willPublish = (bool) ($validated['is_published'] ?? false);
-        $post->fill($validated);
-        $post->is_published = $willPublish;
-        $post->published_at = $willPublish ? ($post->published_at ?? now()) : null;
+        $post->titre = $validated['title'];
+        $post->resume = $validated['excerpt'] ?? null;
+        $post->contenu = $validated['content'];
+        $post->categorie_id = $validated['category_id'];
+        if (isset($validated['cover_image'])) {
+            $post->image_couverture = $validated['cover_image'];
+        }
+        $post->est_publie = $willPublish;
+        $post->publie_le = $willPublish ? ($post->publie_le ?? now()) : null;
         $post->save();
 
         return redirect()->route('admin.posts.index')->with('status', 'Article mis a jour.');
@@ -124,8 +133,8 @@ class PostController extends Controller
 
     public function destroy(Post $post): RedirectResponse
     {
-        if ($post->cover_image) {
-            Storage::disk('public')->delete($post->cover_image);
+        if ($post->image_couverture) {
+            Storage::disk('public')->delete($post->image_couverture);
         }
 
         $post->delete();

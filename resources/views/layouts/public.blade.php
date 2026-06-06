@@ -40,12 +40,17 @@
                                         Mes commentaires
                                     @endif
                                 </a>
+                                <a href="{{ route('profile.edit') }}"
+                                   class="text-sm font-medium {{ request()->routeIs('profile.*') ? 'nav-active' : 'text-gray-600 hover:text-brand-700' }}">
+                                    Mon compte
+                                </a>
                             @endauth
                         </div>
                     </div>
 
                     <div class="hidden sm:flex sm:items-center sm:gap-4">
                         @auth
+                            <a href="{{ route('profile.edit') }}" class="text-sm font-medium text-gray-600 hover:text-brand-700">Mon compte</a>
                             <span class="text-sm text-gray-500">Bonjour, <span class="text-brand-700 font-medium">{{ auth()->user()->name }}</span></span>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
@@ -79,6 +84,7 @@
                                 Mes commentaires
                             @endif
                         </a>
+                        <a href="{{ route('profile.edit') }}" class="block text-sm font-medium text-gray-700">Mon compte</a>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button type="submit" class="block text-sm font-medium text-red-600">Deconnexion</button>
