@@ -68,7 +68,9 @@
                                         {{ $comment->post->title }}
                                     </a>
                                     <span class="text-xs text-gray-400">
-                                        {{ $comment->created_at->format('d/m/Y à H:i') }}
+                                        @if($comment->cree_le)
+                                            {{ $comment->cree_le->format('d/m/Y à H:i') }}
+                                        @endif
                                     </span>
                                 </div>
                                 <p class="text-gray-700 text-sm">{{ $comment->content }}</p>

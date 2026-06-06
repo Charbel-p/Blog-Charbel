@@ -29,6 +29,8 @@ class Comment extends Model
     {
         return [
             'est_approuve' => 'boolean',
+            'cree_le' => 'datetime',
+            'modifie_le' => 'datetime',
         ];
     }
 
