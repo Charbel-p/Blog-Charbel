@@ -117,23 +117,20 @@ class User extends Authenticatable
 
     public function profilePhotoUrl(): ?string
     {
-        if (! $this->photo_profil) {
+        if (! filled($this->photo_profil)) {
             return null;
         }
 
-        if (! Storage::disk('public')->exists($this->photo_profil)) {
-            return null;
+        $url = Storage::disk('public')->url($this->photo_profil);
+
+        if ($this->modifie_le) {
+            $url .= '?v='.$this->modifie_le->timestamp;
         }
 
-        return Storage::disk('public')->url($this->photo_profil);
+        return $url;
     }
 
     public function hasProfilePhoto(): bool
-    {
-        return filled($this->photo_profil) && $this->profilePhotoUrl() !== null;
-    }
-
-    public function hasStoredProfilePhoto(): bool
     {
         return filled($this->photo_profil);
     }

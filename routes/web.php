@@ -9,6 +9,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\UserProfileController;
 use App\Models\Category;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
@@ -60,6 +61,7 @@ Route::get('/sync-categories', function () {
 
 Route::get('/', [PostController::class, 'index'])->name('posts.index');
 Route::get('/posts/{post:libelle_url}', [PostController::class, 'show'])->name('posts.show');
+Route::get('/utilisateurs/{user}', [UserProfileController::class, 'show'])->name('users.show');
 
 Route::get('/dashboard', DashboardController::class)
     ->middleware(['auth', 'verified'])

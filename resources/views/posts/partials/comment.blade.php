@@ -3,14 +3,14 @@
 <div id="comment-{{ $comment->id }}" class="{{ $comment->isReply() ? 'ms-8 sm:ms-10 mt-3' : 'mb-3' }}">
     <div class="bg-white rounded-lg border border-brand-100 p-4 {{ $comment->isReply() ? 'border-l-4 border-l-brand-300' : '' }}">
         <div class="flex items-center gap-2 mb-2">
-            <div class="w-8 h-8 rounded-full bg-brand-600 flex items-center justify-center text-white text-sm font-semibold shrink-0">
-                {{ strtoupper(substr($comment->user->name, 0, 1)) }}
-            </div>
+            <a href="{{ route('users.show', $comment->user) }}" title="Voir le profil de {{ $comment->user->name }}">
+                <x-user-avatar :user="$comment->user" />
+            </a>
             <div>
-                <strong class="text-sm text-brand-900">{{ $comment->user->name }}</strong>
+                <x-user-link :user="$comment->user" class="text-sm" />
                 @if($comment->isReply() && $comment->parent)
                     <span class="text-xs text-gray-400 block sm:inline sm:ms-2">
-                        en réponse à {{ $comment->parent->user->name }}
+                        en réponse à <x-user-link :user="$comment->parent->user" class="text-xs font-normal" />
                     </span>
                 @endif
             </div>
