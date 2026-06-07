@@ -130,7 +130,12 @@ class User extends Authenticatable
 
     public function hasProfilePhoto(): bool
     {
-        return $this->profilePhotoUrl() !== null;
+        return filled($this->photo_profil) && $this->profilePhotoUrl() !== null;
+    }
+
+    public function hasStoredProfilePhoto(): bool
+    {
+        return filled($this->photo_profil);
     }
 
     public function profileInitial(): string

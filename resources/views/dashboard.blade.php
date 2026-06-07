@@ -54,6 +54,17 @@
                                 <h3 class="font-semibold text-brand-900">Commentaires</h3>
                                 <p class="text-sm text-gray-500 mt-1">Moderer les avis</p>
                             </a>
+
+                            <a href="{{ route('admin.users.index') }}"
+                               class="group block p-5 rounded-xl border border-brand-100 hover:border-brand-300 hover:shadow-md transition">
+                                <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center mb-3 group-hover:bg-blue-200 transition">
+                                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                                    </svg>
+                                </div>
+                                <h3 class="font-semibold text-brand-900">Utilisateurs</h3>
+                                <p class="text-sm text-gray-500 mt-1">Voir les inscrits</p>
+                            </a>
                         </div>
                     @else
                         <p class="text-sm text-gray-600 mb-6">

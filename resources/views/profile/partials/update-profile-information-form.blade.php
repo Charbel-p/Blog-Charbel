@@ -34,11 +34,15 @@
             <p class="mt-1 text-xs text-gray-500">JPG, PNG ou WebP — 2 Mo max.</p>
             <x-input-error class="mt-2" :messages="$errors->get('photo_profil')" />
 
-            @if($user->hasProfilePhoto())
-                <label class="mt-3 inline-flex items-center gap-2 text-sm text-gray-600">
-                    <input type="checkbox" name="remove_photo" value="1" class="rounded border-gray-300 text-brand-600 focus:ring-brand-500">
-                    Supprimer ma photo actuelle
-                </label>
+            @if($user->hasStoredProfilePhoto())
+                <form method="post" action="{{ route('profile.photo.destroy') }}" class="mt-3"
+                      onsubmit="return confirm('Supprimer votre photo de profil ?')">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="text-sm font-medium text-red-600 hover:text-red-800">
+                        Supprimer ma photo actuelle
+                    </button>
+                </form>
             @endif
         </div>
 
@@ -92,6 +96,14 @@
                     x-init="setTimeout(() => show = false, 2500)"
                     class="text-sm text-green-600"
                 >Profil mis à jour.</p>
+            @elseif (session('status') === 'profile-photo-removed')
+                <p
+                    x-data="{ show: true }"
+                    x-show="show"
+                    x-transition
+                    x-init="setTimeout(() => show = false, 2500)"
+                    class="text-sm text-green-600"
+                >Photo de profil supprimée.</p>
             @endif
         </div>
     </form>

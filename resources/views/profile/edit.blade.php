@@ -8,6 +8,12 @@
 
     <div class="py-12">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-6">
+            @if (session('status') === 'profile-photo-removed')
+                <div class="rounded-md bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-800">
+                    Votre photo de profil a ete supprimee.
+                </div>
+            @endif
+
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-xl border border-brand-100">
                 <div class="p-6 sm:p-8 flex flex-col sm:flex-row gap-6 items-start">
                     <div class="shrink-0">

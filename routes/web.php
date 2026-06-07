@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\CommentModerationController;
 use App\Http\Controllers\Admin\PostController as AdminPostController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CommentLikeController;
 use App\Http\Controllers\DashboardController;
@@ -76,10 +77,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/comments', [CommentModerationController::class, 'index'])->name('comments.index');
         Route::patch('/comments/{comment}/approve', [CommentModerationController::class, 'approve'])->name('comments.approve');
         Route::delete('/comments/{comment}/reject', [CommentModerationController::class, 'reject'])->name('comments.reject');
+        Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
     });
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile/photo', [ProfileController::class, 'destroyPhoto'])->name('profile.photo.destroy');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 

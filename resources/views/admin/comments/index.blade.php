@@ -2,10 +2,16 @@
     <x-slot name="header">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Moderation des commentaires</h2>
-            <a href="{{ route('admin.posts.index') }}"
-               class="inline-flex items-center px-3 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
-                Retour aux articles
-            </a>
+            <div class="flex flex-wrap gap-2">
+                <a href="{{ route('admin.posts.index') }}"
+                   class="inline-flex items-center px-3 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
+                    Articles
+                </a>
+                <a href="{{ route('admin.users.index') }}"
+                   class="inline-flex items-center px-3 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
+                    Utilisateurs
+                </a>
+            </div>
         </div>
     </x-slot>
 

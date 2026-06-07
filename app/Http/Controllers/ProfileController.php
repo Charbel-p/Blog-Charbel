@@ -28,12 +28,9 @@ class ProfileController extends Controller
         $user->courriel = $validated['email'];
         $user->bio = $validated['bio'] ?? null;
 
-        if ($request->boolean('remove_photo') && $user->photo_profil) {
-            Storage::disk('public')->delete($user->photo_profil);
-            $user->photo_profil = null;
-        }
-
-        if ($request->hasFile('photo_profil')) {
+        if ($request->boolean('remove_photo')) {
+            $this->deleteProfilePhoto($user);
+        } elseif ($request->hasFile('photo_profil')) {
             if ($user->photo_profil) {
                 Storage::disk('public')->delete($user->photo_profil);
             }
@@ -48,6 +45,15 @@ class ProfileController extends Controller
         $user->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
+    }
+
+    public function destroyPhoto(Request $request): RedirectResponse
+    {
+        $user = $request->user();
+        $this->deleteProfilePhoto($user);
+        $user->save();
+
+        return Redirect::route('profile.edit')->with('status', 'profile-photo-removed');
     }
 
     public function destroy(Request $request): RedirectResponse
@@ -70,5 +76,14 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+
+    private function deleteProfilePhoto($user): void
+    {
+        if ($user->photo_profil) {
+            Storage::disk('public')->delete($user->photo_profil);
+        }
+
+        $user->photo_profil = null;
     }
 }
