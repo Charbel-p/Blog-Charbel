@@ -77,6 +77,14 @@ class User extends Authenticatable
         );
     }
 
+    protected function emailVerifiedAt(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->courriel_verifie_le,
+            set: fn ($value) => ['courriel_verifie_le' => $value],
+        );
+    }
+
     public function getIsAdminAttribute(): bool
     {
         return (bool) $this->est_administrateur;

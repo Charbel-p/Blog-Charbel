@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Auth\CourrielUserProvider;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\ServiceProvider;
 
@@ -20,6 +22,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Auth::provider('courriel', function ($app, array $config) {
+            return new CourrielUserProvider($app['hash'], $config['model']);
+        });
+
         $publicStorage = public_path('storage');
         $appPublic = storage_path('app/public');
 
