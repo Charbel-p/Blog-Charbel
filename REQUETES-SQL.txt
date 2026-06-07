@@ -1,0 +1,271 @@
+REQUETES SQL — BLOG CHARBEL
+Tables metier : utilisateurs, categories, articles, commentaires, avis, commentaire_likes
+
+
+UTILISATEURS
+
+SELECT id, nom, courriel, est_administrateur, bio, cree_le
+FROM utilisateurs;
+
+SELECT id, nom, courriel
+FROM utilisateurs
+WHERE est_administrateur = 1;
+
+SELECT id, nom, courriel
+FROM utilisateurs
+WHERE est_administrateur = 0;
+
+SELECT *
+FROM utilisateurs
+WHERE courriel = 'parfaitgbedo18@gmail.com';
+
+INSERT INTO utilisateurs (nom, courriel, mot_de_passe, est_administrateur, cree_le, modifie_le)
+VALUES ('Charbel', 'charbel@example.com', '$2y$12$...hash...', 1, NOW(), NOW());
+
+UPDATE utilisateurs
+SET nom = 'Charbel G.',
+    bio = 'Eleve ingenieur, passionne de voyages.',
+    modifie_le = NOW()
+WHERE id = 1;
+
+UPDATE utilisateurs
+SET photo_profil = 'profiles/photo.jpg',
+    modifie_le = NOW()
+WHERE id = 2;
+
+UPDATE utilisateurs
+SET est_administrateur = 1,
+    modifie_le = NOW()
+WHERE courriel = 'admin@example.com';
+
+DELETE FROM utilisateurs
+WHERE id = 5;
+
+
+CATEGORIES
+
+SELECT id, nom, libelle_url, cree_le
+FROM categories
+ORDER BY nom;
+
+SELECT *
+FROM categories
+WHERE libelle_url = 'voyage';
+
+INSERT INTO categories (nom, libelle_url, cree_le, modifie_le)
+VALUES ('Technologie', 'technologie', NOW(), NOW());
+
+UPDATE categories
+SET nom = 'Reflexions personnelles',
+    libelle_url = 'reflexions',
+    modifie_le = NOW()
+WHERE id = 3;
+
+DELETE FROM categories
+WHERE id = 4;
+
+
+ARTICLES
+
+SELECT id, titre, libelle_url, est_publie, publie_le, utilisateur_id, categorie_id
+FROM articles
+WHERE est_publie = 1
+  AND publie_le IS NOT NULL
+  AND publie_le <= NOW()
+ORDER BY publie_le DESC;
+
+SELECT id, titre, est_publie, publie_le
+FROM articles
+ORDER BY cree_le DESC;
+
+SELECT
+    a.id,
+    a.titre,
+    a.contenu,
+    a.publie_le,
+    u.nom AS auteur,
+    c.nom AS categorie
+FROM articles a
+INNER JOIN utilisateurs u ON a.utilisateur_id = u.id
+INNER JOIN categories c ON a.categorie_id = c.id
+WHERE a.libelle_url = 'bienvenue-sur-mon-blog';
+
+INSERT INTO articles (
+    utilisateur_id, categorie_id, titre, libelle_url, resume, contenu,
+    est_publie, publie_le, cree_le, modifie_le
+)
+VALUES (
+    1, 1, 'Mon premier article', 'mon-premier-article',
+    'Court resume...', 'Contenu complet de l''article...',
+    1, NOW(), NOW(), NOW()
+);
+
+UPDATE articles
+SET est_publie = 1,
+    publie_le = NOW(),
+    modifie_le = NOW()
+WHERE id = 3;
+
+UPDATE articles
+SET titre = 'Nouveau titre',
+    contenu = 'Nouveau contenu...',
+    modifie_le = NOW()
+WHERE id = 1;
+
+UPDATE articles
+SET image_couverture = 'posts/covers/mon-image.jpg',
+    modifie_le = NOW()
+WHERE id = 1;
+
+DELETE FROM articles
+WHERE id = 10;
+
+
+COMMENTAIRES
+
+SELECT c.id, c.contenu, c.cree_le, u.nom AS auteur
+FROM commentaires c
+INNER JOIN utilisateurs u ON c.utilisateur_id = u.id
+WHERE c.article_id = 1
+  AND c.est_approuve = 1
+ORDER BY c.cree_le DESC;
+
+SELECT id, contenu, utilisateur_id, cree_le
+FROM commentaires
+WHERE article_id = 1
+  AND commentaire_parent_id IS NULL
+  AND est_approuve = 1
+ORDER BY cree_le DESC;
+
+SELECT id, contenu, utilisateur_id, cree_le
+FROM commentaires
+WHERE commentaire_parent_id = 5
+  AND est_approuve = 1
+ORDER BY cree_le DESC;
+
+SELECT c.id, c.contenu, u.nom, a.titre AS article
+FROM commentaires c
+INNER JOIN utilisateurs u ON c.utilisateur_id = u.id
+INNER JOIN articles a ON c.article_id = a.id
+WHERE c.est_approuve = 0;
+
+INSERT INTO commentaires (article_id, utilisateur_id, commentaire_parent_id, contenu, est_approuve, cree_le, modifie_le)
+VALUES (1, 2, NULL, 'Super article, merci !', 1, NOW(), NOW());
+
+INSERT INTO commentaires (article_id, utilisateur_id, commentaire_parent_id, contenu, est_approuve, cree_le, modifie_le)
+VALUES (1, 3, 5, 'Je suis d''accord avec toi.', 1, NOW(), NOW());
+
+UPDATE commentaires
+SET contenu = 'Texte corrige du commentaire.',
+    modifie_le = NOW()
+WHERE id = 8;
+
+UPDATE commentaires
+SET est_approuve = 1,
+    modifie_le = NOW()
+WHERE id = 12;
+
+DELETE FROM commentaires
+WHERE id = 8;
+
+SELECT article_id, COUNT(*) AS total_commentaires
+FROM commentaires
+WHERE est_approuve = 1
+GROUP BY article_id;
+
+
+AVIS
+
+SELECT a.id, a.note, a.texte_avis, u.nom, ar.titre
+FROM avis a
+INNER JOIN utilisateurs u ON a.utilisateur_id = u.id
+INNER JOIN articles ar ON a.article_id = ar.id;
+
+SELECT article_id, ROUND(AVG(note), 1) AS note_moyenne, COUNT(*) AS nombre_avis
+FROM avis
+WHERE article_id = 1
+GROUP BY article_id;
+
+SELECT *
+FROM avis
+WHERE article_id = 1
+  AND utilisateur_id = 2;
+
+INSERT INTO avis (article_id, utilisateur_id, note, texte_avis, cree_le, modifie_le)
+VALUES (1, 2, 5, NULL, NOW(), NOW());
+
+UPDATE avis
+SET note = 4,
+    modifie_le = NOW()
+WHERE article_id = 1
+  AND utilisateur_id = 2;
+
+DELETE FROM avis
+WHERE article_id = 1
+  AND utilisateur_id = 2;
+
+
+COMMENTAIRE_LIKES
+
+SELECT cl.id, u.nom, cl.cree_le
+FROM commentaire_likes cl
+INNER JOIN utilisateurs u ON cl.utilisateur_id = u.id
+WHERE cl.commentaire_id = 5;
+
+SELECT commentaire_id, COUNT(*) AS total_likes
+FROM commentaire_likes
+WHERE commentaire_id = 5
+GROUP BY commentaire_id;
+
+SELECT *
+FROM commentaire_likes
+WHERE commentaire_id = 5
+  AND utilisateur_id = 2;
+
+INSERT INTO commentaire_likes (commentaire_id, utilisateur_id, cree_le, modifie_le)
+VALUES (5, 2, NOW(), NOW());
+
+DELETE FROM commentaire_likes
+WHERE commentaire_id = 5
+  AND utilisateur_id = 2;
+
+SELECT c.id, c.contenu, COUNT(cl.id) AS nb_likes
+FROM commentaires c
+LEFT JOIN commentaire_likes cl ON c.id = cl.commentaire_id
+GROUP BY c.id, c.contenu
+ORDER BY nb_likes DESC;
+
+
+STATISTIQUES
+
+SELECT 'utilisateurs' AS table_nom, COUNT(*) AS total FROM utilisateurs
+UNION ALL
+SELECT 'categories', COUNT(*) FROM categories
+UNION ALL
+SELECT 'articles', COUNT(*) FROM articles
+UNION ALL
+SELECT 'commentaires', COUNT(*) FROM commentaires
+UNION ALL
+SELECT 'avis', COUNT(*) FROM avis
+UNION ALL
+SELECT 'commentaire_likes', COUNT(*) FROM commentaire_likes;
+
+SELECT
+    a.titre,
+    c.nom AS categorie,
+    COUNT(DISTINCT co.id) AS nb_commentaires,
+    ROUND(AVG(av.note), 1) AS note_moyenne
+FROM articles a
+INNER JOIN categories c ON a.categorie_id = c.id
+LEFT JOIN commentaires co ON a.id = co.article_id AND co.est_approuve = 1
+LEFT JOIN avis av ON a.id = av.article_id
+WHERE a.est_publie = 1
+GROUP BY a.id, a.titre, c.nom
+ORDER BY a.publie_le DESC;
+
+SELECT u.nom, u.courriel,
+       (SELECT COUNT(*) FROM commentaires WHERE utilisateur_id = u.id) AS commentaires,
+       (SELECT COUNT(*) FROM avis WHERE utilisateur_id = u.id) AS notes,
+       (SELECT COUNT(*) FROM commentaire_likes WHERE utilisateur_id = u.id) AS likes_donnes
+FROM utilisateurs u
+WHERE u.id = 2;

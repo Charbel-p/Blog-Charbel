@@ -64,7 +64,7 @@
                 <div class="card-blog p-6">
                     <h2 class="text-lg font-semibold text-brand-900 mb-1">Donner votre avis</h2>
                     <p class="text-xs text-gray-500 mb-4">Note de 1 a 5 etoiles</p>
-                    <form action="{{ route('reviews.store', $post->id) }}" method="POST" class="space-y-4">
+                    <form action="{{ route('reviews.store', $post) }}" method="POST" class="space-y-4">
                         @csrf
                         <div>
                             <x-input-label for="rating" value="Note (1 a 5)" />
@@ -78,7 +78,7 @@
 
                 <div class="card-blog p-6">
                     <h2 class="text-lg font-semibold text-brand-900 mb-4">Laisser un commentaire</h2>
-                    <form action="{{ route('comments.store', $post->id) }}" method="POST" class="space-y-4">
+                    <form action="{{ route('comments.store', $post) }}" method="POST" class="space-y-4">
                         @csrf
                         <div>
                             <textarea name="content" rows="4" required class="block w-full input-brand"

@@ -25,7 +25,6 @@
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Article</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Auteur</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Commentaire</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Statut</th>
                                 <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
                             </tr>
                         </thead>
@@ -42,13 +41,6 @@
                                             @endif
                                         @endif
                                         {{ $comment->content }}
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        @if($comment->is_approved)
-                                            <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">Approuve</span>
-                                        @else
-                                            <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800">En attente</span>
-                                        @endif
                                     </td>
                                     <td class="px-6 py-4 text-right text-sm space-x-2">
                                         @unless($comment->is_approved)
@@ -68,7 +60,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="px-6 py-8 text-center text-gray-500">Aucun commentaire.</td>
+                                    <td colspan="4" class="px-6 py-8 text-center text-gray-500">Aucun commentaire.</td>
                                 </tr>
                             @endforelse
                         </tbody>
